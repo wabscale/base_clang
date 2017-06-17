@@ -1,63 +1,18 @@
 # file: ansible-role-llvm/tasks/source.yml
 
 - name: LLVM | get from git repository
-  git: repo={{ llvm_repo_url }}
+  git: repo="{{ llvm_repo_url }}"
        dest="{{ llvm_tmp }}"
-       version={{ llvm_version }}
+       version="{{ llvm_version }}"
   register: llvm_downloaded
 
 - name: CLANG | get from git repository
-  git: repo={{ clang_repo_url }}
+  git: repo="{{ clang_repo_url }}"
        dest="{{ clang_tmp }}"
-       version={{ clang_version }}
+       version="{{ clang_version }}"
   register: clang_downloaded
 
--name LLVM-CLANG | make build dir
-  file: dest={{ llvm_build_dir }}
-        state=directory
-        # owner=root
-        # group=wheel
-        # mode='u=rwX,g=rwX,o=rX'
-        # recurse=yes
-
-
-# - name: EMACS | make emacs configure file
-#   command: ./autogen.sh chdir="{{ emacs_tmp }}"
-#   when: emacs_downloaded.changed
-
-# - name: EMACS | make emacs Makefile
-#   command: ./configure --prefix=/usr/local
-#            --without-makeinfo --with-x-toolkit=no --without-x
-#            --without-all
-#            chdir="{{ emacs_tmp }}"
-#   when: emacs_downloaded.changed
-
-# - name: EMACS | make emacs
-#   command: make chdir="{{ emacs_tmp }}"
-#   when: emacs_downloaded.changed
-
-# - name: EMACS | install emacs
-#   command: make install chdir="{{ emacs_tmp }}"
-#   become: true
-#   when: emacs_downloaded.changed
-
-
-# - name: Erlang | Unpack the compressed erlang source
-#   unarchive:
-#     src: "/tmp/otp_src_{{erlang_version}}.tar.gz"
-#     dest: "/tmp"
-#     copy: no
-#   when: erlang_downloaded.changed
-
-# - name: Erlang | Build erlang from source - pt. 1 (configure)
-#   command: "./configure chdir=/tmp/otp_src_{{erlang_version}}"
-#   when: erlang_downloaded.changed
-
-# - name: Erlang | Build erlang from source - pt. 2 (make)
-#   command: "make chdir=/tmp/otp_src_{{erlang_version}}"
-#   when: erlang_downloaded.changed
-
-# - name: Erlang | Build erlang from source - pt. 3 (make install)
-#   become: true
-#   command: "make install chdir=/tmp/otp_src_{{erlang_version}}"
-#   when: erlang_downloaded.changed
+- name: LLVM | Creates build directory
+  file:
+    path: "{{ llvm_build_dir }}"
+    state: directory
