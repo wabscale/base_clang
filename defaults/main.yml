@@ -5,5 +5,5 @@ llvm_version: "release_40"
 llvm_tmp: "/tmp/llvm"
 clang_repo_url: https://github.com/llvm-mirror/clang.git
 clang_version: "release_40"
-clang_tmp: /tmp/llvm/tools
+clang_tmp: /tmp/llvm/tools/clang
 llvm_build_dir: /tmp/llvm_build_dir
