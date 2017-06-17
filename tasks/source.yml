@@ -24,8 +24,8 @@
 
 - name: LLVM | run cmake
   command: cmake -G "Unix Makefiles" {{ llvm_tmp }} chdir="{{ llvm_build_dir }}"
-  when: llvm_downloaded.changed
+# when: llvm_downloaded.changed
 
 - name: LLVM | make
   command: make chdir="{{ llvm_build_dir }}"
-  when: llvm_downloaded.changed
+# when: llvm_downloaded.changed
