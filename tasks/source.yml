@@ -16,3 +16,16 @@
   file:
     path: "{{ llvm_build_dir }}"
     state: directory
+
+- name: LLVM | Build
+  file:
+    path: "{{ llvm_build_dir }}"
+    state: directory
+
+- name: LLVM | run cmake
+  command: cmake -G "Unix Makefiles" {{ llvm_tmp }} chdir="{{ llvm_build_dir }}"
+  when: llvm_downloaded.changed
+
+- name: LLVM | make
+  command: make chdir="{{ llvm_build_dir }}"
+  when: llvm_downloaded.changed
