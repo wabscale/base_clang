@@ -1,0 +1,19 @@
+# file: ansible-role-llvm/meta/main.yml
+
+galaxy_info:
+  author: ros
+  company: ANXS
+  description: Install llvm
+  min_ansible_version: 0.1
+  license: MIT
+  platforms:
+  - name: Centos
+    versions:
+    - all
+  categories:
+  - system
+
+dependencies:
+  - {role: ANXS.build-essential, tags: build-essential }
+  - {role: kfieldho/ansible-role-cmake, tags: cmake }
+  - {role: geerlingguy.git, tags: git }
