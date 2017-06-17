@@ -15,5 +15,5 @@ galaxy_info:
 
 dependencies:
   # - {role: ANXS.build-essential, tags: build-essential }
-  - {role: RomanShestakov/ansible-role-cmake, tags: cmake }
+  - {role: RomanShestakov.ansible-role-cmake, tags: cmake }
   - {role: geerlingguy.git, tags: git }
