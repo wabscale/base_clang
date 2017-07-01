@@ -1,11 +1,13 @@
 # file: ansible-role-llvm/tasks/main.yml
 
-- name: LLVM | Check if the LLVM version is already installed
-  command: cat /var/cache/anxs-llvm-version
-  register: current_llvm_version
-  ignore_errors: yes
-  changed_when: current_llvm_version.rc != 0 or current_llvm_version.stdout != "{{llvm_version}}"
-- include: source.yml
-  when: current_llvm_version.changed
-- name: LLVM | Persist current version
-  copy: dest=/var/cache/anxs-llvm-version content="{{llvm_version}}"
+# - name: LLVM | Check if the LLVM version is already installed
+#   command: cat /var/cache/anxs-llvm-version
+#   register: current_llvm_version
+#   ignore_errors: yes
+#   changed_when: current_llvm_version.rc != 0 or current_llvm_version.stdout != "{{llvm_version}}"
+# - include: source.yml
+#   when: current_llvm_version.changed
+# - name: LLVM | Persist current version
+#   copy: dest=/var/cache/anxs-llvm-version content="{{llvm_version}}"
+
+- include: 'compile-llvm.yml'

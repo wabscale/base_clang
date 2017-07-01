@@ -1,0 +1,44 @@
+# file: ansible-role-llvm/tasks/source.yml
+
+- name: LLVM | get from git repository
+  git: repo="{{ llvm_repo_url }}"
+       dest="{{ llvm_tmp }}"
+       version="{{ llvm_version }}"
+  register: llvm_downloaded
+
+- name: CLANG | get from git repository
+  git: repo="{{ clang_repo_url }}"
+       dest="{{ clang_tmp }}"
+       version="{{ clang_version }}"
+  register: clang_downloaded
+
+- name: LLVM | Creates build directory
+  file:
+    path: "{{ llvm_build_dir }}"
+    state: directory
+
+- name: LLVM | Build
+  file:
+    path: "{{ llvm_build_dir }}"
+    state: directory
+
+- name: LLVM | run cmake
+  command:  chdir="{{ llvm_build_dir }}" \
+            cmake -G "Unix Makefiles" {{ llvm_tmp }} \
+            -DCMAKE_C_COMPILER={{gcc_install_dir}}/bin/gcc \
+            -DCMAKE_CXX_COMPILER={{gcc_install_dir}}/bin/g++ \
+            -DGCC_INSTALL_PREFIX={{gcc_install_dir}} \
+            -DCMAKE_CXX_LINK_FLAGS="-L{{gcc_install_dir}}/lib64 -Wl,-rpath,{{gcc_install_dir}}/lib64" \
+            -DCMAKE_INSTALL_PREFIX={{llvm_install_dir}} \
+            -DLLVM_ENABLE_ASSERTIONS=ON \
+            -DCMAKE_BUILD_TYPE="Release" \
+            -DLLVM_TARGETS_TO_BUILD="X86" {{ llvm_tmp }}
+  when: llvm_downloaded.changed
+
+- name: LLVM | make
+  command: chdir="{{ llvm_build_dir }}" make
+  when: llvm_downloaded.changed
+
+- name: LLVM | install
+  command: chdir="{{ llvm_build_dir }}" make install
+  when: llvm_downloaded.changed

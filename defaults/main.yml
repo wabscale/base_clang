@@ -7,3 +7,4 @@ clang_repo_url: https://github.com/llvm-mirror/clang.git
 clang_version: "release_40"
 clang_tmp: /tmp/llvm/tools/clang
 llvm_build_dir: /tmp/llvm_build_dir
+llvm_install_dir: /opt/llvm-{{llvm_version}}
