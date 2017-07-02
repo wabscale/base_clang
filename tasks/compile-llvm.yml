@@ -10,17 +10,15 @@
   git: repo="{{ clang_repo_url }}"
        dest="{{ clang_tmp }}"
        version="{{ clang_version }}"
-  register: clang_downloaded
+  when: llvm_downloaded.changed
 
 - name: LLVM | Creates build directory
-  file:
-    path: "{{ llvm_build_dir }}"
-    state: directory
+  file: path: "{{ llvm_build_dir }}" state: directory
+  when: llvm_downloaded.changed
 
 - name: LLVM | Build
-  file:
-    path: "{{ llvm_build_dir }}"
-    state: directory
+  file: path: "{{ llvm_build_dir }}" state: directory
+  when: llvm_downloaded.changed
 
 - name: LLVM | run cmake
   command:  chdir="{{ llvm_build_dir }}" \
