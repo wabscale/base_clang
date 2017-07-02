@@ -13,11 +13,11 @@
   when: llvm_downloaded.changed
 
 - name: LLVM | Creates build directory
-  file: path: "{{ llvm_build_dir }}" state: directory
+  file: path="{{ llvm_build_dir }}", state=directory
   when: llvm_downloaded.changed
 
 - name: LLVM | Build
-  file: path: "{{ llvm_build_dir }}" state: directory
+  file: path="{{ llvm_build_dir }}",  state=directory
   when: llvm_downloaded.changed
 
 - name: LLVM | run cmake
