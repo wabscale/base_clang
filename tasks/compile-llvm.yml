@@ -7,13 +7,16 @@
   register: llvm_downloaded
 
 - name: CLANG | get from git repository
+  become: true
   git: repo="{{ clang_repo_url }}"
        dest="{{ clang_tmp }}"
        version="{{ clang_version }}"
   when: llvm_downloaded.changed
 
-- name: LLVM | Creates build directory
-  file: path="{{ llvm_build_dir }}", state=directory
+- name: Make gcc build folder
+  become: true
+  file: path="{{ llvm_build_dir }}" state=directory
+  #when: llvm_downloaded.changed
 
 - name: LLVM | run cmake
   command:  chdir="{{ llvm_build_dir }}" \
@@ -29,9 +32,11 @@
   when: llvm_downloaded.changed
 
 - name: LLVM | make
+  become: true
   command: chdir="{{ llvm_build_dir }}" make
   when: llvm_downloaded.changed
 
 - name: LLVM | install
+  become: true
   command: chdir="{{ llvm_build_dir }}" make install
   when: llvm_downloaded.changed
