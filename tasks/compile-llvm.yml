@@ -53,8 +53,8 @@
 #   shell: ldconfig
 #   #when: gcc_downloaded.changed
 
-# - name: LLVM | add path to /etc/profile.d
-#   become: true
-#   action: template src=llvm.sh-template.j2
-#           dest="/etc/profile.d/llvm.sh"
-#           mode=0644
+- name: LLVM | add path to /etc/profile.d
+  become: true
+  action: template src=llvm.sh-template.j2
+          dest="/etc/profile.d/llvm.sh"
+          mode=0644
