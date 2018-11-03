@@ -14,7 +14,7 @@
   when: llvm_downloaded.changed
 
 - name: Make gcc build folder
-  become: true
+b  become: true
   file: path="{{ llvm_build_dir }}" state=directory
   when: llvm_downloaded.changed
 
@@ -24,6 +24,7 @@
             -DCMAKE_C_COMPILER={{gcc_install_dir}}/bin/gcc \
             -DCMAKE_CXX_COMPILER={{gcc_install_dir}}/bin/g++ \
             -DGCC_INSTALL_PREFIX={{gcc_install_dir}} \
+            -DCMAKE_CXX_LINK_FLAGS="-L{{gcc_install_dir}}/lib64 -Wl,-rpath,{{gcc_install_dir}}/lib64" \
             -DCMAKE_INSTALL_RPATH="{{gcc_install_dir}}/lib64" \
             -DCMAKE_INSTALL_PREFIX={{llvm_install_dir}} \
             -DLLVM_ENABLE_ASSERTIONS=ON \
