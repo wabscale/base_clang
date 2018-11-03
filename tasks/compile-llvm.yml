@@ -14,7 +14,7 @@
   when: llvm_downloaded.changed
 
 - name: Make gcc build folder
-b  become: true
+  become: true
   file: path="{{ llvm_build_dir }}" state=directory
   when: llvm_downloaded.changed
 
