@@ -1,16 +1,26 @@
 # file: ansible-role-llvm/tasks/source.yml
 
+- name: LLVM | clean tmp dir
+  file:
+    state: absent
+    path: "{{ llvm_tmp }}"
+
+- name: LLVM | clean build dir
+  file:
+    state: absent
+    path: "{{ llvm_build_dir }}"
+
 - name: LLVM | get from git repository
   git: repo="{{ llvm_repo_url }}"
        dest="{{ llvm_tmp }}"
-       version="{{ llvm_version }}"
+       version="{{ version }}"
   register: llvm_downloaded
 
 - name: CLANG | get from git repository
   become: true
   git: repo="{{ clang_repo_url }}"
        dest="{{ clang_tmp }}"
-       version="{{ clang_version }}"
+       version="{{ version }}"
   when: llvm_downloaded.changed
 
 - name: Make gcc build folder
