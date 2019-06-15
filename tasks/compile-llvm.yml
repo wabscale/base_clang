@@ -23,7 +23,14 @@
        version="{{ version }}"
   when: llvm_downloaded.changed
 
-- name: Make gcc build folder
+- name: CLANG_EXTRA_TOOLS | get from git repository
+  become: true
+  git: repo="{{ clang_extra_tools_repo_url }}"
+       dest="{{ clang_extra_tools_tmp }}"
+       version="{{ version }}"
+  when: llvm_downloaded.changed
+
+- name: LLVM | Make LLVM build folder
   become: true
   file: path="{{ llvm_build_dir }}" state=directory
   when: llvm_downloaded.changed

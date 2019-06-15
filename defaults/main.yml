@@ -5,6 +5,8 @@ version: "release_80"
 llvm_tmp: "/tmp/llvm"
 clang_repo_url: https://github.com/llvm-mirror/clang.git
 clang_tmp: /tmp/llvm/tools/clang
+clang_extra_tools_repo_url: https://github.com/llvm-mirror/clang-tools-extra.git
+clang_extra_tools_tmp: /tmp/llvm/tools/clang/tools/extra
 llvm_build_dir: /tmp/llvm-{{version}}-build
 llvm_install_dir: /opt/llvm-{{version}}
 gcc_version: 6.3.0
