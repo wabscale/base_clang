@@ -62,7 +62,7 @@
 - name: LLVM | add path to /etc/ld.so.conf.d/
   become: true
   action: template src=llvm.conf-template.j2
-          dest="/etc/ld.so.conf.d/llvm-{{llvm_version}}.conf"
+          dest="/etc/ld.so.conf.d/llvm-{{version}}.conf"
           mode=0644
   when: llvm_downloaded.changed
 
