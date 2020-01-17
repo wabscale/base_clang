@@ -48,6 +48,7 @@
   set_fact:
     cmake_env: "source /etc/profile.d/cmake.sh"
     cmd_env: "source /opt/rh/devtoolset-{{ DTSVER }}/enable"
+    gcc_install_dir: "/opt/rh/devtoolset-{{ DTSVER }}/root"
   tags:
     - cmake
     - make
