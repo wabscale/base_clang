@@ -87,7 +87,7 @@
 
 - name: LLVM | make
   become: true
-  shell: "{{ gcc_env | default('') }} &&  {{ py_env | default('true') }} && make"
+  shell: "{{ gcc_env | default('') }} &&  {{ py_env | default('true') }} && make -j {{ ansible_processor_vcpus }}"
   args:
     chdir: "{{ llvm_build_dir }}"
   tags:
@@ -95,7 +95,7 @@
 
 - name: LLVM | install
   become: true
-  shell: "{{ gcc_env | default('') }} && make install"
+  shell: "{{ gcc_env | default('') }} && make install -j {{ ansible_processor_vcpus }} "
   args:
     chdir: "{{ llvm_build_dir }}"
   tags:
