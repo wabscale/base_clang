@@ -47,17 +47,26 @@
   when: collections_enabled and ansible_os_family == 'RedHat'
   set_fact:
     cmake_env: "source /etc/profile.d/cmake.sh"
-    cmd_env: "source /opt/rh/devtoolset-{{ DTSVER }}/enable"
+    gcc_env: "source /opt/rh/devtoolset-{{ DTSVER }}/enable"
     gcc_install_dir: "/opt/rh/devtoolset-{{ DTSVER }}/root"
   tags:
     - cmake
     - make
     - make_install
 
+- name: source python27 environment for Centos6
+  when:
+    - ansible_os_family == 'RedHat'
+    - ansible_distribution_major_version|int == 6
+  set_fact:
+    py_env: "source /opt/rh/python27/enable"
+
 # yamllint disable rule:line-length
 - name: LLVM | run cmake
   shell: |
-    {{ cmd_env | default('') }} && {{ cmake_env| default('cmake') }} && \
+    {{ cmake_env| default('') }} && \
+    {{ gcc_env | default('') }} && \
+    {{ py_env | default('') }} && \
     cmake -G "Unix Makefiles" {{ llvm_tmp }} \
     -DGCC_INSTALL_PREFIX={{ gcc_install_dir }} \
     -DCMAKE_CXX_LINK_FLAGS="-L{{ gcc_install_dir }}/lib64 -Wl,-rpath,{{ gcc_install_dir }}/lib64" \
@@ -74,7 +83,7 @@
 
 - name: LLVM | make
   become: true
-  shell: "{{ cmd_env | default('') }} && make"
+  shell: "{{ gcc_env | default('') }} &&  {{ py_env | default('') }} && make"
   args:
     chdir: "{{ llvm_build_dir }}"
   tags:
@@ -82,7 +91,7 @@
 
 - name: LLVM | install
   become: true
-  shell: "{{ cmd_env | default('') }} && make install"
+  shell: "{{ gcc_env | default('') }} && make install"
   args:
     chdir: "{{ llvm_build_dir }}"
   tags:
