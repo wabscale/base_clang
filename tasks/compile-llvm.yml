@@ -66,7 +66,7 @@
   shell: |
     {{ cmake_env| default('') }} && \
     {{ gcc_env | default('') }} && \
-    {{ py_env | default('') }} && \
+    {{ py_env | default('/usr/bin/true') }} && \
     cmake -G "Unix Makefiles" {{ llvm_tmp }} \
     -DGCC_INSTALL_PREFIX={{ gcc_install_dir }} \
     -DCMAKE_CXX_LINK_FLAGS="-L{{ gcc_install_dir }}/lib64 -Wl,-rpath,{{ gcc_install_dir }}/lib64" \
