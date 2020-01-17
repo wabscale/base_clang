@@ -1,0 +1,30 @@
+---
+dependency:
+  name: galaxy
+  requirements_file: requirements.yml
+driver:
+  name: docker
+verifier:
+  name: goss
+  lint:
+    name: yamllint
+platforms:
+  - name: base-clang-centos7
+    image: centos:7
+    privileged: true
+  - name: base-clang-centos6
+    image: centos:6
+    privileged: true
+provisioner:
+  name: ansible
+  config_options:
+    defaults:
+      remote_tmp: /tmp
+      stdout_callback: yaml
+  playbooks:
+    converge: playbook.yml
+    verify: verify.yml
+  lint:
+    name: ansible-lint
+scenario:
+  name: default

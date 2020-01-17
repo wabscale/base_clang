@@ -1,0 +1,12 @@
+---
+- hosts: all
+  vars:
+    development_groupinstall: false
+    DTSVER: 6
+    CLANG: 6.0
+
+  roles:
+    - role: dockpack.base_cmake
+    - {role: dockpack.base_git, vars: [collections_enabled: false], tags: 'git'}
+    - {role: dockpack.base_gcc, vars: [collections_enabled: true], tags: 'gcc'}
+    - {role: base_clang, tags: 'clang'}

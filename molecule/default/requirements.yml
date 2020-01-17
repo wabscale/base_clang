@@ -1,0 +1,17 @@
+---
+
+- src: https://github.com/dockpack/base_cmake.git
+  scm: git
+  name: dockpack.base_cmake
+
+- src: https://github.com/dockpack/base_epel.git
+  scm: git
+  name: dockpack.base_epel
+
+- src: https://github.com/dockpack/base_gcc.git
+  scm: git
+  name: dockpack.base_gcc
+
+- src: https://github.com/dockpack/base_git.git
+  scm: git
+  name: dockpack.base_git
