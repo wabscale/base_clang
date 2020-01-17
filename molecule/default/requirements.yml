@@ -15,3 +15,7 @@
 - src: https://github.com/dockpack/base_git.git
   scm: git
   name: dockpack.base_git
+
+- src: https://github.com/dockpack/base_python.git
+  scm: git
+  name: dockpack.base_python
