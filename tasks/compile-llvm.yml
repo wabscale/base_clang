@@ -1,79 +1,107 @@
+---
 # file: ansible-role-llvm/tasks/source.yml
 
+
 - name: LLVM | clean tmp dir
+  when: clean_source_dir|bool
   file:
     state: absent
     path: "{{ llvm_tmp }}"
 
 - name: LLVM | clean build dir
+  when: clean_build_dir|bool
   file:
     state: absent
     path: "{{ llvm_build_dir }}"
 
 - name: LLVM | get from git repository
-  git: repo="{{ llvm_repo_url }}"
-       dest="{{ llvm_tmp }}"
-       version="{{ version }}"
+  git:
+    repo: "{{ llvm_repo_url }}"
+    dest: "{{ llvm_tmp }}"
+    version: "{{ llvm_version }}"
   register: llvm_downloaded
 
 - name: CLANG | get from git repository
   become: true
-  git: repo="{{ clang_repo_url }}"
-       dest="{{ clang_tmp }}"
-       version="{{ version }}"
+  git:
+    repo: "{{ clang_repo_url }}"
+    dest: "{{ clang_tmp }}"
+    version: "{{ clang_version }}"
   when: llvm_downloaded.changed
 
 - name: CLANG_EXTRA_TOOLS | get from git repository
   become: true
-  git: repo="{{ clang_extra_tools_repo_url }}"
-       dest="{{ clang_extra_tools_tmp }}"
-       version="{{ version }}"
+  git:
+    repo: "{{ clang_extra_tools_repo_url }}"
+    dest: "{{ clang_extra_tools_tmp }}"
+    version: "{{ llvm_version }}"
   when: llvm_downloaded.changed
 
 - name: LLVM | Make LLVM build folder
   become: true
-  file: path="{{ llvm_build_dir }}" state=directory
-  when: llvm_downloaded.changed
+  file:
+    path: "{{ llvm_build_dir }}"
+    state: directory
 
+- name: source devtoolset and cmake profiles
+  when: collections_enabled and ansible_os_family == 'RedHat'
+  set_fact:
+    cmake_env: "source /etc/profile.d/cmake.sh"
+    cmd_env: "source /opt/rh/devtoolset-{{ DTSVER }}/enable"
+  tags:
+    - cmake
+    - make
+    - make_install
+
+# yamllint disable rule:line-length
 - name: LLVM | run cmake
-  command:  chdir="{{ llvm_build_dir }}" \
-            cmake -G "Unix Makefiles" {{ llvm_tmp }} \
-            -DCMAKE_C_COMPILER={{gcc_install_dir}}/bin/gcc \
-            -DCMAKE_CXX_COMPILER={{gcc_install_dir}}/bin/g++ \
-            -DGCC_INSTALL_PREFIX={{gcc_install_dir}} \
-            -DCMAKE_CXX_LINK_FLAGS="-L{{gcc_install_dir}}/lib64 -Wl,-rpath,{{gcc_install_dir}}/lib64" \
-            -DCMAKE_INSTALL_RPATH="{{gcc_install_dir}}/lib64" \
-            -DCMAKE_INSTALL_PREFIX={{llvm_install_dir}} \
-            -DLLVM_ENABLE_ASSERTIONS=ON \
-            -DCMAKE_BUILD_TYPE="Release" \
-            -DLLVM_TARGETS_TO_BUILD="X86" {{ llvm_tmp }}
-  when: llvm_downloaded.changed
+  shell: |
+    {{ cmd_env | default('') }} && {{ cmake_env| default('cmake') }} && \
+    cmake -G "Unix Makefiles" {{ llvm_tmp }} \
+    -DGCC_INSTALL_PREFIX={{ gcc_install_dir }} \
+    -DCMAKE_CXX_LINK_FLAGS="-L{{ gcc_install_dir }}/lib64 -Wl,-rpath,{{ gcc_install_dir }}/lib64" \
+    -DCMAKE_INSTALL_RPATH="{{ gcc_install_dir }}/lib64" \
+    -DCMAKE_INSTALL_PREFIX={{ llvm_install_dir }} \
+    -DLLVM_ENABLE_ASSERTIONS=ON \
+    -DCMAKE_BUILD_TYPE="Release" \
+    -DLLVM_TARGETS_TO_BUILD="X86" {{ llvm_tmp }}
+  args:
+    chdir: "{{ llvm_build_dir }}"
+  tags:
+    - cmake
+# yamllint enable rule:line-length
 
 - name: LLVM | make
   become: true
-  command: chdir="{{ llvm_build_dir }}" make
-  when: llvm_downloaded.changed
+  shell: "{{ cmd_env | default('') }} && make"
+  args:
+    chdir: "{{ llvm_build_dir }}"
+  tags:
+    - make
 
 - name: LLVM | install
   become: true
-  command: chdir="{{ llvm_build_dir }}" make install
-  when: llvm_downloaded.changed
+  shell: "{{ cmd_env | default('') }} && make install"
+  args:
+    chdir: "{{ llvm_build_dir }}"
+  tags:
+    - make_install
 
 - name: LLVM | add path to /etc/ld.so.conf.d/
   become: true
-  action: template src=llvm.conf-template.j2
-          dest="/etc/ld.so.conf.d/llvm-{{version}}.conf"
-          mode=0644
-  when: llvm_downloaded.changed
+  template:
+    src: llvm.conf-template.j2
+    dest: "/etc/ld.so.conf.d/llvm-{{version}}.conf"
+    mode: 0644
 
 - name: LLVM | run ldconfig
   become: true
   shell: ldconfig
-  when: llvm_downloaded.changed
 
 - name: LLVM | add path to /etc/profile.d
   become: true
-  action: template src=llvm.sh-template.j2
-          dest="/etc/profile.d/llvm.sh"
-          mode=0644
-  when: llvm_downloaded.changed
+  template:
+    src: llvm.sh-template.j2
+    dest: "/etc/profile.d/llvm.sh"
+    mode: 0644
+...

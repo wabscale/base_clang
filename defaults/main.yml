@@ -1,13 +1,17 @@
+---
 # file: ansible-role-llvm/defaults/main.yml
 
 llvm_repo_url: https://github.com/llvm-mirror/llvm.git
-version: "release_80"
-llvm_tmp: "/tmp/llvm"
+llvm_version: "release_60"
+clang_version: "{{ llvm_version }}"
+llvm_tmp: "/usr/local/src/llvm"
 clang_repo_url: https://github.com/llvm-mirror/clang.git
-clang_tmp: /tmp/llvm/tools/clang
+clang_tmp: /usr/local/src/llvm/tools/clang
 clang_extra_tools_repo_url: https://github.com/llvm-mirror/clang-tools-extra.git
-clang_extra_tools_tmp: /tmp/llvm/tools/clang/tools/extra
-llvm_build_dir: /tmp/llvm-{{version}}-build
-llvm_install_dir: /opt/llvm-{{version}}
-gcc_version: 6.3.0
-gcc_install_dir: "/opt/gcc-{{gcc_version}}"
+clang_extra_tools_tmp: /usr/local/src/llvm/tools/clang/tools/extra
+llvm_build_dir: "/usr/local/src/llvm-{{ version }}-build"
+llvm_install_dir: "/opt/llvm-{{ version }}"
+gcc_install_dir: "/opt/rh/devtoolset-{{ DTSVER }}/root"
+clean_source_dir: false
+clean_build_dir: true
+...

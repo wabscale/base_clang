@@ -1,3 +1,4 @@
+---
 # file: ansible-role-llvm/meta/main.yml
 
 galaxy_info:
@@ -7,14 +8,16 @@ galaxy_info:
   min_ansible_version: 0.1
   license: MIT
   platforms:
-  - name: Centos
-    versions:
-    - all
-  categories:
-  - system
+    - name: Centos
+      versions:
+        - 6
+        - 7
+  galaxy_tags:
+    - system
+    - development
 
-dependencies:
-  # - {role: ANXS.build-essential, tags: build-essential }
-  # - {role: RomanShestakov.ansible-role-gcc, tags: cmake }
-  # - {role: RomanShestakov.ansible-role-cmake, tags: cmake }
-  # - {role: geerlingguy.git, tags: git }
+dependencies: []
+# - {role: dockpack.base_cmake }
+# - {role: dockpack.base_gcc }
+# - {role: dockpack.base_git }
+...
