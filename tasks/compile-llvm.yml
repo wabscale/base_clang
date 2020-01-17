@@ -60,13 +60,17 @@
     - ansible_distribution_major_version|int == 6
   set_fact:
     py_env: "source /opt/rh/python27/enable"
+  tags:
+    - cmake
+    - make
+    - make_install
 
 # yamllint disable rule:line-length
 - name: LLVM | run cmake
   shell: |
     {{ cmake_env| default('') }} && \
     {{ gcc_env | default('') }} && \
-    {{ py_env | default('/usr/bin/true') }} && \
+    {{ py_env | default('true') }} && \
     cmake -G "Unix Makefiles" {{ llvm_tmp }} \
     -DGCC_INSTALL_PREFIX={{ gcc_install_dir }} \
     -DCMAKE_CXX_LINK_FLAGS="-L{{ gcc_install_dir }}/lib64 -Wl,-rpath,{{ gcc_install_dir }}/lib64" \
