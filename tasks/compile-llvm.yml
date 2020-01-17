@@ -105,7 +105,7 @@
   become: true
   template:
     src: llvm.conf-template.j2
-    dest: "/etc/ld.so.conf.d/llvm-{{version}}.conf"
+    dest: "/etc/ld.so.conf.d/llvm-{{ llvm_version }}.conf"
     mode: 0644
 
 - name: LLVM | run ldconfig
