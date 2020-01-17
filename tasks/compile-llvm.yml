@@ -87,7 +87,7 @@
 
 - name: LLVM | make
   become: true
-  shell: "{{ gcc_env | default('') }} &&  {{ py_env | default('') }} && make"
+  shell: "{{ gcc_env | default('') }} &&  {{ py_env | default('true') }} && make"
   args:
     chdir: "{{ llvm_build_dir }}"
   tags:
