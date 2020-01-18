@@ -118,4 +118,15 @@
     src: llvm.sh-template.j2
     dest: "/etc/profile.d/llvm.sh"
     mode: 0644
+
+- name: LLVM | cleanup build directory
+  file:
+    path: "{{ llvm_build_dir }}"
+    state: absent
+
+- name: LLVM | clean tmp dir
+  when: clean_source_dir|bool
+  file:
+    state: absent
+    path: "{{ llvm_tmp }}"
 ...
