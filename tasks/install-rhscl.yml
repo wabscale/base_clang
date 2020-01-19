@@ -1,0 +1,51 @@
+---
+# https://access.redhat.com/documentation/en-us/red_hat_developer_tools/2018.4/html-single/using_clang_and_llvm_toolset/index
+- name: install centos software collections
+  package:
+    name: centos-release-scl-rh
+    state: present
+  register: network_access
+  until: network_access is success
+  retries: 10
+  delay: 2
+  when: ansible_distribution == 'CentOS'
+  tags:
+    - clang
+    - rhscl
+
+- name: enable rhel software variant devtools
+  command: "yum-config-manager --enable rhel-7-variant-devtools-rpms"
+  when:
+    - ansible_distribution_major_version|int == 7
+  tags:
+    - clang
+    - rhscl
+
+- name: Install LLVM toolset
+  yum:
+    name: "{{ llvm_toolset }}"
+    state: present
+    update_cache: true
+  register: network_access
+  until: network_access is success
+  retries: 5
+  delay: 2
+  tags:
+    - clang
+    - rhscl
+
+- name: Set llvm_install_dir
+  set_fact:
+    llvm_install_dir: "/opt/rh/{{ llvm_toolset }}/root"
+  tags:
+    - clang
+    - rhscl
+
+- name: Enable LLVM toolset
+  file:
+    src: "/opt/rh/{{ llvm_toolset }}/enable"
+    path: /etc/profile.d/enable_llvm_toolset.sh
+    state: link
+  tags:
+    - clang
+    - rhscl
