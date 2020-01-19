@@ -1,3 +1,6 @@
 ## add env var LLVM_ROOT - used in emacs setup
 export LLVM_ROOT={{ llvm_install_dir }}
 export PATH={{ llvm_install_dir }}/bin:$PATH
+export CC={{ llvm_install_dir }}/bin/clang
+export CXX={{ llvm_install_dir }}/bin/clang++
+export CPP={{ llvm_install_dir }}/bin/clang-cpp

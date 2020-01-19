@@ -1,6 +1,12 @@
 ---
 # file: ansible-role-llvm/defaults/main.yml
 
+# for installation
+collections_enabled: false
+llvm_toolset: 'llvm-toolset-7.0'
+
+# for compilation
+llvm_compilation: true
 llvm_repo_url: https://github.com/llvm-mirror/llvm.git
 llvm_version: "release_60"
 clang_version: "{{ llvm_version }}"

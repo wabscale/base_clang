@@ -12,5 +12,35 @@
 # - name: LLVM | Persist current version
 #   copy: dest=/var/cache/anxs-llvm-version content="{{llvm_version}}"
 
-- include: 'compile-llvm.yml'
+- name: Install Software Collections
+  when: collections_enabled|bool and ansible_os_family == 'RedHat'
+  include: 'install-rhscl.yml'
+  tags:
+    - clang
+    - rhscl
+
+- name: Compile LLVM+CLang
+  when: llvm_compilation|bool and ansible_os_family == 'RedHat'
+  include: 'compile-llvm.yml'
+  tags:
+    - clang
+    - compile
+
+- name: LLVM | cleanup devtoolset profile
+  file:
+    path: "/etc/profile.d/devtoolset.sh"
+    state: absent
+  tags:
+    - clang
+    - rhscl
+
+- name: LLVM | add environment variables to /etc/profile.d/llvm.sh
+  become: true
+  template:
+    src: llvm.sh-template.j2
+    dest: "/etc/profile.d/llvm.sh"
+    mode: 0644
+  tags:
+    - clang
+    - rhscl
 ...

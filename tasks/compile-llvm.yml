@@ -54,23 +54,11 @@
     - make
     - make_install
 
-- name: source python27 environment for Centos6
-  when:
-    - ansible_os_family == 'RedHat'
-    - ansible_distribution_major_version|int == 6
-  set_fact:
-    py_env: "source /opt/rh/python27/enable"
-  tags:
-    - cmake
-    - make
-    - make_install
-
 # yamllint disable rule:line-length
 - name: LLVM | run cmake
   shell: |
     {{ cmake_env| default('') }} && \
     {{ gcc_env | default('') }} && \
-    {{ py_env | default('true') }} && \
     cmake -G "Unix Makefiles" {{ llvm_tmp }} \
     -DGCC_INSTALL_PREFIX={{ gcc_install_dir }} \
     -DCMAKE_CXX_LINK_FLAGS="-L{{ gcc_install_dir }}/lib64 -Wl,-rpath,{{ gcc_install_dir }}/lib64" \
@@ -87,7 +75,7 @@
 
 - name: LLVM | make
   become: true
-  shell: "{{ gcc_env | default('') }} &&  {{ py_env | default('true') }} && make -j {{ ansible_processor_vcpus }}"
+  shell: "{{ gcc_env | default('') }} && make -j {{ ansible_processor_vcpus }}"
   args:
     chdir: "{{ llvm_build_dir }}"
   tags:
@@ -95,7 +83,8 @@
 
 - name: LLVM | install
   become: true
-  shell: "{{ gcc_env | default('') }} && make install -j {{ ansible_processor_vcpus }} "
+  shell: "{{ gcc_env | default('') }} && \
+    make install -j {{ ansible_processor_vcpus }} "
   args:
     chdir: "{{ llvm_build_dir }}"
   tags:
@@ -111,18 +100,6 @@
 - name: LLVM | run ldconfig
   become: true
   shell: ldconfig
-
-- name: LLVM | add path to /etc/profile.d
-  become: true
-  template:
-    src: llvm.sh-template.j2
-    dest: "/etc/profile.d/llvm.sh"
-    mode: 0644
-
-- name: LLVM | cleanup build directory
-  file:
-    path: "{{ llvm_build_dir }}"
-    state: absent
 
 - name: LLVM | clean tmp dir
   when: clean_source_dir|bool
