@@ -44,7 +44,7 @@
     state: directory
 
 - name: source devtoolset and cmake profiles
-  when: collections_enabled and ansible_os_family == 'RedHat'
+  when: collections_enabled|bool and ansible_os_family == 'RedHat'
   set_fact:
     cmake_env: "source /etc/profile.d/cmake.sh"
     gcc_env: "source /opt/rh/devtoolset-{{ DTSVER }}/enable"
