@@ -2,11 +2,11 @@
 # file: ansible-role-llvm/defaults/main.yml
 
 # for installation
-collections_enabled: false
+collections_enabled: true
 llvm_toolset: 'llvm-toolset-7.0'
 
 # for compilation
-llvm_compilation: true
+llvm_compilation: false
 llvm_repo_url: https://github.com/llvm-mirror/llvm.git
 llvm_version: "release_60"
 clang_version: "{{ llvm_version }}"
@@ -17,7 +17,7 @@ clang_extra_tools_repo_url: https://github.com/llvm-mirror/clang-tools-extra.git
 clang_extra_tools_tmp: /usr/local/src/llvm/tools/clang/tools/extra
 llvm_build_dir: "/usr/local/src/llvm-{{ llvm_version }}-build"
 llvm_install_dir: "/usr/local"
-gcc_version: 6.3.1
+gcc_version: 8.3.0
 gcc_install_dir: "/opt/gcc-{{gcc_version}}"
 clean_source_dir: false
 clean_build_dir: true
