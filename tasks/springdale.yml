@@ -1,0 +1,19 @@
+---
+
+- name: install Springdale Software Collections
+  copy:
+    src: springdale-7-SCL.repo
+    dest: /etc/yum.repos.d
+    owner: root
+    group: root
+    mode: 0644
+  tags:
+    - springdale
+
+- name: install llvm-toolset-6.0
+  yum:
+    name: 'llvm-toolset-6.0'
+    state: present
+    update_cache: true
+  tags:
+    - springdale

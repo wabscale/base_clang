@@ -13,11 +13,26 @@
 #   copy: dest=/var/cache/anxs-llvm-version content="{{llvm_version}}"
 
 - name: Install Software Collections
-  when: collections_enabled|bool and ansible_os_family == 'RedHat'
+  when:
+    - collections_enabled|bool
+    - llvm_toolset == 'llvm-toolset-7.0'
+    - not llvm_compilation|bool
+    - ansible_os_family == 'RedHat'
   include: 'install-rhscl.yml'
   tags:
     - clang
     - rhscl
+
+- name: Install Software Collections
+  when:
+    - collections_enabled|bool
+    - llvm_toolset == 'llvm-toolset-6.0'
+    - not llvm_compilation|bool
+    - ansible_os_family == 'RedHat'
+  include: 'springdale.yml'
+  tags:
+    - clang
+    - springdale
 
 - name: Compile LLVM+CLang
   when: llvm_compilation|bool and ansible_os_family == 'RedHat'
