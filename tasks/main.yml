@@ -12,7 +12,7 @@
 # - name: LLVM | Persist current version
 #   copy: dest=/var/cache/anxs-llvm-version content="{{llvm_version}}"
 
-- name: Install Software Collections
+- name: Install RedHat Software Collections
   when:
     - collections_enabled|bool
     - llvm_toolset == 'llvm-toolset-7.0'
@@ -23,12 +23,13 @@
     - clang
     - rhscl
 
-- name: Install Software Collections
+- name: Install Springdale Software Collections
   when:
     - collections_enabled|bool
     - llvm_toolset == 'llvm-toolset-6.0'
     - not llvm_compilation|bool
     - ansible_os_family == 'RedHat'
+    - ansible_distribution_major_version|int == 7
   include: 'springdale.yml'
   tags:
     - clang

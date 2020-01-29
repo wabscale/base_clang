@@ -17,3 +17,19 @@
     update_cache: true
   tags:
     - springdale
+
+- name: Set llvm_install_dir
+  set_fact:
+    llvm_install_dir: "/opt/rh/{{ llvm_toolset }}/root"
+  tags:
+    - clang
+    - springdale
+
+- name: Enable LLVM toolset
+  file:
+    src: "/opt/rh/{{ llvm_toolset }}/enable"
+    path: /etc/profile.d/enable_llvm_toolset.sh
+    state: link
+  tags:
+    - clang
+    - springdale
