@@ -2,21 +2,21 @@
 # file: ansible-role-llvm/meta/main.yml
 
 galaxy_info:
-  author: ros
-  company: ANXS
-  description: Install llvm
-  min_ansible_version: 0.1
+  author: ros, bbaassssiiee
+  company: ANXS, dockpack
+  description: Install/compile llvm+clang
+  min_ansible_version: 2.0
   license: MIT
   platforms:
     - name: Centos
       versions:
-        - 6
         - 7
   galaxy_tags:
     - system
     - development
 
 dependencies: []
+# - {role: dockpack.base_epel }
 # - {role: dockpack.base_cmake }
 # - {role: dockpack.base_gcc }
 # - {role: dockpack.base_git }
