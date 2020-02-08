@@ -1,4 +1,7 @@
+
 ## dockpack.base_clang
+[![Galaxy](https://img.shields.io/badge/galaxy-dockpack.base__clang-blue.svg?style=flat)](https://galaxy.ansible.com/dockpack/base_clang)
+![Build Status](https://api.travis-ci.com/dockpack/base_clang.svg)
 
 Ansible role to install or compile LLVM and Clang.
 
