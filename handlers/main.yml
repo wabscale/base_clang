@@ -1,0 +1,5 @@
+---
+
+- name: run ldconfig
+  become: true
+  command: ldconfig

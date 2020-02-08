@@ -27,7 +27,6 @@
     repo: "{{ clang_repo_url }}"
     dest: "{{ clang_tmp }}"
     version: "{{ clang_version }}"
-  when: llvm_downloaded.changed
 
 - name: CLANG_EXTRA_TOOLS | get from git repository
   become: true
@@ -35,7 +34,6 @@
     repo: "{{ clang_extra_tools_repo_url }}"
     dest: "{{ clang_extra_tools_tmp }}"
     version: "{{ llvm_version }}"
-  when: llvm_downloaded.changed
 
 - name: LLVM | Make LLVM build folder
   become: true
@@ -69,6 +67,7 @@
     -DLLVM_TARGETS_TO_BUILD="X86" {{ llvm_tmp }}
   args:
     chdir: "{{ llvm_build_dir }}"
+  changed_when: true
   tags:
     - cmake
 # yamllint enable rule:line-length
@@ -78,6 +77,7 @@
   shell: "{{ gcc_env | default('') }} && make -j {{ ansible_processor_vcpus }}"
   args:
     chdir: "{{ llvm_build_dir }}"
+  changed_when: true
   tags:
     - make
 
@@ -87,6 +87,7 @@
     make install -j {{ ansible_processor_vcpus }} "
   args:
     chdir: "{{ llvm_build_dir }}"
+  changed_when: true
   tags:
     - make_install
 
@@ -96,10 +97,7 @@
     src: llvm.conf-template.j2
     dest: "/etc/ld.so.conf.d/llvm-{{ llvm_version }}.conf"
     mode: 0644
-
-- name: LLVM | run ldconfig
-  become: true
-  shell: ldconfig
+  notify: run ldconfig
 
 - name: LLVM | clean tmp dir
   when: clean_source_dir|bool
