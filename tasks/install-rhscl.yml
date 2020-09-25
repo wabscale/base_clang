@@ -46,6 +46,7 @@
     src: "/opt/rh/{{ llvm_toolset }}/enable"
     path: /etc/profile.d/enable_llvm_toolset.sh
     state: link
+    mode: 0755
   tags:
     - clang
     - rhscl
