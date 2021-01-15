@@ -46,6 +46,7 @@
   file:
     path: "{{ llvm_build_dir }}"
     state: directory
+    mode: 0755
 
 - name: source devtoolset and cmake profiles
   when: collections_enabled|bool and ansible_os_family == 'RedHat'
