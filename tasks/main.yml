@@ -49,6 +49,7 @@
   tags:
     - clang
     - rhscl
+    - notest
 
 - name: LLVM | add environment variables to /etc/profile.d/llvm.sh
   become: true
