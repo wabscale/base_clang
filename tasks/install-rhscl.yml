@@ -21,6 +21,21 @@
     - clang
     - rhscl
 
+- name: Install LLVM dependencies
+  yum:
+    name:
+      - make
+      - python3-devel
+    state: present
+    update_cache: true
+  register: network_access
+  until: network_access is success
+  retries: 5
+  delay: 2
+  tags:
+    - clang
+    - rhscl
+
 - name: Install LLVM toolset
   yum:
     name: "{{ llvm_toolset }}"
