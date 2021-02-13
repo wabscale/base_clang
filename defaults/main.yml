@@ -7,15 +7,15 @@ llvm_toolset: 'llvm-toolset-7.0'
 
 # for compilation
 llvm_compilation: false
-llvm_repo_url: https://github.com/llvm-mirror/llvm.git
-llvm_version: "release_60"
+llvm_repo_url: 'https://github.com/llvm/llvm-project'
+llvm_version: "llvmorg-11.0.1"
 clang_version: "{{ llvm_version }}"
-llvm_tmp: "/usr/local/src/llvm"
+llvm_tmp: "../llvm"
 clang_repo_url: https://github.com/llvm-mirror/clang.git
 clang_tmp: /usr/local/src/llvm/tools/clang
 clang_extra_tools_repo_url: https://github.com/llvm-mirror/clang-tools-extra.git
 clang_extra_tools_tmp: /usr/local/src/llvm/tools/clang/tools/extra
-llvm_build_dir: "/usr/local/src/llvm-{{ llvm_version }}-build"
+llvm_build_dir: "/usr/local/src/llvm"
 llvm_install_dir: "/usr/local"
 gcc_version: 8.3.0
 gcc_install_dir: "/opt/gcc-{{gcc_version}}"
