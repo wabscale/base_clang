@@ -16,8 +16,8 @@
   when:
     - collections_enabled|bool
     - llvm_toolset == 'llvm-toolset-7.0'
-    - not llvm_compilation|bool
     - ansible_os_family == 'RedHat'
+    - ansible_distribution_major_version|int == 7
   include: 'install-rhscl.yml'
   tags:
     - clang
