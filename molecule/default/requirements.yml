@@ -8,10 +8,6 @@
   scm: git
   name: dockpack.base_epel
 
-- src: https://github.com/dockpack/base_gcc.git
-  scm: git
-  name: dockpack.base_gcc
-
 - src: https://github.com/dockpack/base_git.git
   scm: git
   name: dockpack.base_git

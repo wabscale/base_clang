@@ -18,6 +18,5 @@ galaxy_info:
 dependencies: []
 # - {role: dockpack.base_epel }
 # - {role: dockpack.base_cmake }
-# - {role: dockpack.base_gcc }
 # - {role: dockpack.base_git }
 ...
