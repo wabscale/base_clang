@@ -1,12 +1,12 @@
 ---
 # file: ansible-role-llvm/tasks/source.yml
 
-
-- name: LLVM | clean tmp dir
-  when: clean_source_dir|bool
-  file:
-    state: absent
-    path: "{{ llvm_tmp }}"
+- name: Set llvm_install_dir
+  set_fact:
+    llvm_install_dir: "/usr/local"
+  tags:
+    - clang
+    - rhscl
 
 - name: LLVM | clean build dir
   when: clean_build_dir|bool
@@ -17,71 +17,37 @@
 - name: LLVM | get from git repository
   git:
     repo: "{{ llvm_repo_url }}"
-    dest: "{{ llvm_tmp }}"
+    dest: "{{ llvm_build_dir }}"
     version: "{{ llvm_version }}"
-  register: llvm_downloaded
-
-- name: CLANG | get from git repository
-  become: true
-  git:
-    repo: "{{ clang_repo_url }}"
-    dest: "{{ clang_tmp }}"
-    version: "{{ clang_version }}"
-  when: llvm_downloaded.changed
-  tags:
-    - skip_ansible_lint
-
-- name: CLANG_EXTRA_TOOLS | get from git repository
-  become: true
-  git:
-    repo: "{{ clang_extra_tools_repo_url }}"
-    dest: "{{ clang_extra_tools_tmp }}"
-    version: "{{ llvm_version }}"
-  when: llvm_downloaded.changed
-  tags:
-    - skip_ansible_lint
-
-- name: LLVM | Make LLVM build folder
-  become: true
-  file:
-    path: "{{ llvm_build_dir }}"
-    state: directory
-    mode: 0755
 
 - name: source devtoolset and cmake profiles
   when: collections_enabled|bool and ansible_os_family == 'RedHat'
   set_fact:
     cmake_env: "source /etc/profile.d/cmake.sh"
-    gcc_env: "source /opt/rh/devtoolset-{{ DTSVER }}/enable"
-    gcc_install_dir: "/opt/rh/devtoolset-{{ DTSVER }}/root"
+    llvm_env: "source /opt/rh/llvm-toolset-7.0/enable"
   tags:
     - cmake
     - make
     - make_install
 
-# yamllint disable rule:line-length
 - name: LLVM | run cmake
   shell: |
     {{ cmake_env| default('') }} && \
-    {{ gcc_env | default('') }} && \
-    cmake -G "Unix Makefiles" {{ llvm_tmp }} \
-    -DGCC_INSTALL_PREFIX={{ gcc_install_dir }} \
-    -DCMAKE_CXX_LINK_FLAGS="-L{{ gcc_install_dir }}/lib64 -Wl,-rpath,{{ gcc_install_dir }}/lib64" \
-    -DCMAKE_INSTALL_RPATH="{{ gcc_install_dir }}/lib64" \
+    {{ llvm_env | default('') }} && \
+    cmake -G "Unix Makefiles"  \
     -DCMAKE_INSTALL_PREFIX={{ llvm_install_dir }} \
-    -DLLVM_ENABLE_ASSERTIONS=ON \
-    -DCMAKE_BUILD_TYPE="Release" \
-    -DLLVM_TARGETS_TO_BUILD="X86" {{ llvm_tmp }}
+    -DLLVM_ENABLE_ASSERTIONS=No \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DLLVM_TARGETS_TO_BUILD=X86 llvm
   args:
     chdir: "{{ llvm_build_dir }}"
   changed_when: true
   tags:
     - cmake
-# yamllint enable rule:line-length
 
 - name: LLVM | make
   become: true
-  shell: "{{ gcc_env | default('') }} && make -j {{ ansible_processor_vcpus }}"
+  shell: "{{ llvm_env | default('') }} && make -j {{ ansible_processor_vcpus }}"
   args:
     chdir: "{{ llvm_build_dir }}"
   changed_when: true
@@ -90,7 +56,7 @@
 
 - name: LLVM | install
   become: true
-  shell: "{{ gcc_env | default('') }} && \
+  shell: "{{ llvm_env | default('') }} && \
     make install -j {{ ansible_processor_vcpus }} "
   args:
     chdir: "{{ llvm_build_dir }}"
@@ -110,9 +76,9 @@
   command: ldconfig
   changed_when: true
 
-- name: LLVM | clean tmp dir
+- name: LLVM | clean build dir
   when: clean_source_dir|bool
   file:
     state: absent
-    path: "{{ llvm_tmp }}"
+    path: "{{ llvm_build_dir }}"
 ...
