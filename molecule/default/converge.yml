@@ -9,5 +9,5 @@
     - role: base_clang
       vars:
         collections_enabled: true
-        llvm_compilation: false
+        llvm_compilation: true
       tags: 'clang'
