@@ -70,6 +70,7 @@
 
 - name: LLVM | make
   become: true
+  # yamllint disable-line rule:line-length
   shell: "{{ llvm_env | default('/bin/true') }} && make -j {{ ansible_processor_vcpus }}"
   args:
     chdir: "{{ llvm_build_dir }}"
