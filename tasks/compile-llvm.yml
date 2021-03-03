@@ -32,10 +32,7 @@
     version: "{{ llvm_version }}"
 
 - name: source cmake profile
-  when:
-    - collections_enabled|bool
-    - ansible_os_family == 'RedHat'
-
+  when: collections_enabled|bool and ansible_os_family == 'RedHat'
   set_fact:
     cmake_env: "source /etc/profile.d/cmake.sh"
   tags:
@@ -43,7 +40,7 @@
     - make
     - make_install
 
-- name: source devtoolset profile
+- name: source devtoolset
   when:
     - collections_enabled|bool
     - ansible_os_family == 'RedHat'
@@ -57,12 +54,13 @@
 
 - name: LLVM | run cmake
   shell: |
-    {{ cmake_env| default('') }} && \
-    {{ llvm_env | default('') }} && \
+    {{ cmake_env| default('/bin/true') }} && \
+    {{ llvm_env | default('/bin/true') }} && \
     cmake -G "Unix Makefiles"  \
     -DCMAKE_INSTALL_PREFIX={{ llvm_install_dir }} \
     -DLLVM_ENABLE_ASSERTIONS=No \
     -DCMAKE_BUILD_TYPE=Release \
+    -DLLVM_ENABLE_PROJECTS='clang;;clang-tools-extra;lld;' \
     -DLLVM_TARGETS_TO_BUILD=X86 llvm
   args:
     chdir: "{{ llvm_build_dir }}"
@@ -72,7 +70,7 @@
 
 - name: LLVM | make
   become: true
-  shell: "{{ llvm_env | default('') }} && make -j {{ ansible_processor_vcpus }}"
+  shell: "{{ llvm_env | default('/bin/true') }} && make -j {{ ansible_processor_vcpus }}"
   args:
     chdir: "{{ llvm_build_dir }}"
   changed_when: true
@@ -82,7 +80,7 @@
 - name: LLVM | make clang
   become: true
   # yamllint disable-line rule:line-length
-  shell: "{{ llvm_env | default('') }} && make -j {{ ansible_processor_vcpus }} clang"
+  shell: "{{ llvm_env | default('/bin/true') }} && make -j {{ ansible_processor_vcpus }} clang"
   args:
     chdir: "{{ llvm_build_dir }}"
   changed_when: true
@@ -91,7 +89,7 @@
 
 - name: LLVM | install
   become: true
-  shell: "{{ llvm_env | default('') }} && \
+  shell: "{{ llvm_env | default('/bin/true') }} && \
     make install -j {{ ansible_processor_vcpus }} "
   args:
     chdir: "{{ llvm_build_dir }}"
