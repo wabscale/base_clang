@@ -1,0 +1,6 @@
+---
+
+llvm_toolset:
+  - "llvm-toolset-{{ DTSVER }}.0"
+  - "llvm-toolset-{{ DTSVER }}.0-clang-analyzer"
+  - "llvm-toolset-{{ DTSVER }}.0-clang-tools-extra"

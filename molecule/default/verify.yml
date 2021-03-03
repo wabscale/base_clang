@@ -41,10 +41,8 @@
       register: test_files
 
     - name: Execute Goss tests
-      environment:
-        # yamllint disable-line rule:line-length
-        PATH: '/opt/rh/rh-git218/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
-      command: "{{ goss_dst }} -g {{ item }} validate -f {{ goss_format }}"
+      # yamllint disable-line rule:line-length
+      command: "bash --login -c '{{ goss_dst }} -g {{ item }} validate -f {{ goss_format }}'"
       changed_when: false
       register: test_results
       with_items: "{{ test_files.stdout_lines }}"

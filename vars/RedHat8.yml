@@ -1,0 +1,7 @@
+---
+
+llvm_toolset:
+  - "llvm-toolset"
+  - "llvm-devel"
+  - "llvm-static"
+  - "llvm-test"

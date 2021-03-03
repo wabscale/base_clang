@@ -3,9 +3,11 @@
 
 # for installation
 collections_enabled: true
-llvm_toolset: 'llvm-toolset-7.0'
 
 # for compilation
+llvm_dependencies:
+  - make
+  - python3-devel
 llvm_compilation: false
 llvm_repo_url: 'https://github.com/llvm/llvm-project'
 llvm_version: "llvmorg-11.0.1"

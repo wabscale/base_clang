@@ -1,12 +1,23 @@
 ---
 # file: ansible-role-llvm/tasks/source.yml
 
-- name: Set llvm_install_dir
+- name: LLVM |  Install LLVM dependencies
+  yum:
+    name: "{{ llvm_dependencies }}"
+    state: present
+    update_cache: true
+  register: network_access
+  until: network_access is success
+  retries: 5
+  delay: 2
+  tags:
+    - clang
+
+- name: LLVM | Set llvm_install_dir
   set_fact:
     llvm_install_dir: "/usr/local"
   tags:
     - clang
-    - rhscl
 
 - name: LLVM | clean build dir
   when: clean_build_dir|bool
@@ -48,6 +59,16 @@
 - name: LLVM | make
   become: true
   shell: "{{ llvm_env | default('') }} && make -j {{ ansible_processor_vcpus }}"
+  args:
+    chdir: "{{ llvm_build_dir }}"
+  changed_when: true
+  tags:
+    - make
+
+- name: LLVM | make clang
+  become: true
+  # yamllint disable-line rule:line-length
+  shell: "{{ llvm_env | default('') }} && make -j {{ ansible_processor_vcpus }} clang"
   args:
     chdir: "{{ llvm_build_dir }}"
   changed_when: true

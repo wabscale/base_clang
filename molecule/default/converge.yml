@@ -1,14 +1,14 @@
 ---
 - hosts: all
+  vars_files:
+    - ../../defaults/main.yml
   vars:
     development_groupinstall: false
-    DTSVER: 8
+    DTSVER: 7
     CLANG: 10
   roles:
-    - role: dockpack.base_cmake
-    - {role: dockpack.base_git, vars: [collections_enabled: false], tags: 'git'}
     - role: base_clang
       vars:
         collections_enabled: true
-        llvm_compilation: true
+        llvm_compilation: false
       tags: 'clang'

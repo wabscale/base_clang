@@ -1,21 +1,13 @@
 ---
-# file: ansible-role-llvm/tasks/main.yml
 
-# - name: LLVM | Check if the LLVM version is already installed
-#   command: cat /var/cache/anxs-llvm-version
-#   register: current_llvm_version
-#   ignore_errors: yes
-# yamllint disable-line rule:line-length
-#   changed_when: current_llvm_version.rc != 0 or current_llvm_version.stdout != "{{llvm_version}}"
-# - include: source.yml
-#   when: current_llvm_version.changed
-# - name: LLVM | Persist current version
-#   copy: dest=/var/cache/anxs-llvm-version content="{{llvm_version}}"
+- name: Include OS-specific variables.
+  # yamllint disable-line rule:line-length
+  include_vars: "{{ ansible_os_family }}{{ ansible_distribution_major_version }}.yml"
 
 - name: Install RedHat Software Collections
   when:
     - collections_enabled|bool
-    - llvm_toolset == 'llvm-toolset-7.0'
+    - DTSVER|int > 6
     - ansible_os_family == 'RedHat'
     - ansible_distribution_major_version|int == 7
   include: 'install-rhscl.yml'
@@ -23,17 +15,45 @@
     - clang
     - rhscl
 
-- name: Install Springdale Software Collections
+- name: RedHat | Install LLVM toolset packages
   when:
-    - collections_enabled|bool
-    - llvm_toolset == 'llvm-toolset-6.0'
-    - not llvm_compilation|bool
     - ansible_os_family == 'RedHat'
-    - ansible_distribution_major_version|int == 7
-  include: 'springdale.yml'
+  yum:
+    name: "{{ llvm_toolset }}"
+    state: present
+    update_cache: true
+  register: network_access
+  until: network_access is success
+  retries: 5
+  delay: 2
   tags:
     - clang
-    - springdale
+    - rhscl
+
+- name: RHSCL | Set llvm_install_dir
+  when:
+    - collections_enabled|bool
+    - ansible_os_family == 'RedHat'
+    - ansible_distribution_major_version|int < 8
+  set_fact:
+    llvm_install_dir: "/opt/rh/llvm-toolset-{{ DTSVER }}.0/root"
+  tags:
+    - clang
+    - rhscl
+
+- name: RHSCL | Enable LLVM toolset
+  when:
+    - collections_enabled|bool
+    - ansible_os_family == 'RedHat'
+    - ansible_distribution_major_version|int < 8
+  file:
+    src: "/opt/rh/llvm-toolset-{{ DTSVER }}.0/enable"
+    path: /etc/profile.d/enable_llvm_toolset.sh
+    state: link
+  tags:
+    - clang
+    - rhscl
+
 
 - name: Compile LLVM+CLang
   when: llvm_compilation|bool and ansible_os_family == 'RedHat'
@@ -41,15 +61,6 @@
   tags:
     - clang
     - compile
-
-- name: LLVM | cleanup devtoolset profile
-  file:
-    path: "/etc/profile.d/devtoolset.sh"
-    state: absent
-  tags:
-    - clang
-    - rhscl
-    - notest
 
 - name: LLVM | add environment variables to /etc/profile.d/llvm.sh
   become: true
