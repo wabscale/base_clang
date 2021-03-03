@@ -1,21 +1,17 @@
 
 ## dockpack.base_clang
 [![Galaxy](https://img.shields.io/badge/galaxy-dockpack.base__clang-blue.svg?style=flat)](https://galaxy.ansible.com/dockpack/base_clang)
-![Build Status](https://api.travis-ci.com/dockpack/base_clang.svg)
 
-Ansible role to install or compile LLVM and Clang.
+Ansible role to install LLVM and Clang.
 
-- llvm-toolset-7 contains LLVM 5.0.1.
-- llvm-toolset-6.0 contains LLVM 6.0.1
-- llvm-toolset-7.0 contains LLVM 7.0
+- llvm-toolset-7.0 contains clang 7.0.1 (on Centos7/RHEL7)
+- llvm-toolset contains clang 10.0.1 (on Centos8/RHEL8)
 
-llvm-toolset-6.0 is made available from Springdale Linux.
+If you checkout this role and run `molecule converge`, then you'll have 2 Docker image with llvm-toolset, CMake, Git 2
 
-If you checkout this role and run `molecule converge`, then you'll have a Docker image with llvm-toolset-6.0, CMake, GCC 8.3.1.
-
-
+```yaml
 molecule dependencies:
- - dockpack.base\_epel
- - dockpack.base\_cmake
- - dockpack.base\_gcc
- - dockpack.base\_git
+ - dockpack.base_epel
+ - dockpack.base_cmake
+ - dockpack.base_git
+```
