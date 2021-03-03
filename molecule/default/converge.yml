@@ -3,7 +3,6 @@
   vars_files:
     - ../../defaults/main.yml
   vars:
-    development_groupinstall: false
     DTSVER: 7
     CLANG: 10
   roles:
