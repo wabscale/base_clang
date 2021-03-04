@@ -3,11 +3,11 @@
   vars_files:
     - ../../defaults/main.yml
   vars:
-    DTSVER: 7
+    DTSVER: 7  # Actually llvm_toolkit version
     CLANG: 10
   roles:
     - role: base_clang
       vars:
         collections_enabled: true
-        llvm_compilation: true
+        llvm_compilation: false
       tags: 'clang'
