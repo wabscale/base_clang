@@ -71,4 +71,19 @@
   tags:
     - clang
     - rhscl
+
+- name: Collect clang version
+  command: bash --login -c 'clang --version'
+  register: clang_version
+  changed_when: false
+  tags:
+    - clang
+    - test
+
+- name: Display clang version
+  debug:
+    msg: "{{ clang_version.stdout_lines[0] }}"
+  tags:
+    - clang
+    - test
 ...
