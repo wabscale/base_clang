@@ -26,6 +26,8 @@
     path: "{{ llvm_build_dir }}"
 
 - name: LLVM | get from git repository
+  async: 1800
+  poll: 30
   git:
     repo: "{{ llvm_repo_url }}"
     dest: "{{ llvm_build_dir }}"
@@ -69,6 +71,8 @@
     - cmake
 
 - name: LLVM | make
+  async: 7200
+  poll: 30
   become: true
   # yamllint disable-line rule:line-length
   shell: "{{ llvm_env | default('/bin/true') }} && make -j {{ ansible_processor_vcpus }}"
