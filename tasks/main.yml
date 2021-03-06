@@ -30,13 +30,14 @@
     - clang
     - rhscl
 
-- name: RHSCL | Set llvm_install_dir
+- name: RHSCL | Set llvm_install_dir and llvm_bin_dir
   when:
     - collections_enabled|bool
     - ansible_os_family == 'RedHat'
     - ansible_distribution_major_version|int < 8
   set_fact:
     llvm_install_dir: "/opt/rh/llvm-toolset-{{ DTSVER }}.0/root"
+    llvm_bin_dir: "/opt/rh/llvm-toolset-{{ DTSVER }}.0/root/bin/"
   tags:
     - clang
     - rhscl

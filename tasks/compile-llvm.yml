@@ -102,6 +102,11 @@
   tags:
     - make_install
 
+- name: LLVM | set llvm_bin_dir
+  when: llvm_compilation|bool
+  set_fact:
+    llvm_bin_dir: /usr/local/bin/
+
 - name: LLVM | add path to /etc/ld.so.conf.d/
   become: true
   template:
