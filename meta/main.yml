@@ -1,7 +1,8 @@
 ---
-# file: ansible-role-llvm/meta/main.yml
 
 galaxy_info:
+  role_name: base_clang
+  namespace: dockpack
   author: ros, bbaassssiiee
   company: ANXS, dockpack
   description: Install/compile llvm+clang
@@ -11,6 +12,7 @@ galaxy_info:
     - name: EL
       versions:
         - 7
+        - 8
   galaxy_tags:
     - system
     - development
